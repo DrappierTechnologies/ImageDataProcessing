@@ -52,7 +52,7 @@ namespace ByteToImageConverter.Controllers
             return View();
         }
 
-        public ActionResult ConvertToImage()
+        public ActionResult SQLImagesToPNG(int width, int height)
         {
             //for (int i = 1; i < 6; i++)
             //{
@@ -99,7 +99,7 @@ namespace ByteToImageConverter.Controllers
                         //NOTE: Framework 4.5 (+) we can use rdr.GetStream() to instead of returning bytes
                         var imageBytes = GetBytes(reader, 1);
 
-                        var bitmap32Squared = ResizeImage32Squared(imageBytes);
+                        var bitmap32Squared = ResizeImageSquared(imageBytes, width, height);
 
                         ImageConverter imgConverter = new ImageConverter();
                         byte[] img32 = (byte[])imgConverter.ConvertTo(bitmap32Squared, typeof(byte[]));
@@ -156,7 +156,7 @@ namespace ByteToImageConverter.Controllers
         }
 
 
-        private Bitmap ResizeImage32Squared(byte[] imgBytes)
+        private Bitmap ResizeImageSquared(byte[] imgBytes, int width, int height)
         {
             Image image;
             using (MemoryStream memoryStream = new MemoryStream(imgBytes))
@@ -164,7 +164,7 @@ namespace ByteToImageConverter.Controllers
                 image = Image.FromStream(memoryStream);
             }
             //a holder for the result
-            Bitmap result = new Bitmap(32, 32);
+            Bitmap result = new Bitmap(width, height);
             //use a graphics object to draw the resized image into the bitmap
             using (Graphics graphics = Graphics.FromImage(result))
             {
